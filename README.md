@@ -6,7 +6,7 @@
 ---
 > **Warning**
 >
-> #### 2023-04-12 Bing now をサポートしました
+> #### 2023-04-12 Bing をサポートしました
 > #### 2023-03-27 Bard をサポートしました
 > #### 2023-08-02 非公式GPT-4は現在ダウン中（多分使えない状態）
 
@@ -65,7 +65,7 @@
 
 > **重要 Plus Accountのユーザーのみ有効**
 
-1. Open https://chat.openai.com/api/auth/session
+1.  https://chat.openai.com/api/auth/session を開く
 
 2. `F12`を押す。
 
@@ -88,8 +88,8 @@
 4. クッキーから `__Secure-1PSID` の値をコピーし、`.env` の `BARD_SESSION_ID` の下に貼り付ける。
 
 ---
-## Step 2: Microsoft Bing のやり方
-1. **Rename the file `cookies.dev.json` to `cookies.json`**
+## ステップ 2: Microsoft Bing のやり方
+1. **ファイル `cookies.dev.json` を `cookies.json` に名前を変える。**
 
 2. Go to https://bing.com/chat and log in your Microsoft account
 
@@ -106,7 +106,7 @@
 
 3. `python3 main.py` か`python main.py` を入力しbotを実行させます。
 ---
-## Step 3: Dockerを使ったbotの起動の仕方
+## ステップ 3: Dockerを使ったbotの起動の仕方
 
 1. Dockerイメージをビルドし、Dockerコンテナ`docker compose up -d`を実行する。
 
@@ -120,7 +120,7 @@
 ### それではよいchat gptを～
 ---
 
-## おまけ: 自動ログイン
+## オプション: 自動ログイン
 >  * 自動ログイン機能により、ボットは提供された認証情報を使用してGoogle BardまたはMicrosoft Bingに自動的にログインします。
 >  * 必要なクッキーを自動的に取得します。
 
@@ -134,7 +134,7 @@
    1. .env` で `bing_enable_auto_login` を `True` に設定する。
    2. 次に `.env` に `bing_account` と `bing_password` を入力する。
 
-## Optional: Setup system prompt
+## オプション: Setup system prompt
 
 * ボットの初回起動時またはリセット時に、システムプロンプトが表示される。
 * system_prompt.txt`の内容を修正することで設定できる。
@@ -155,7 +155,7 @@
 ------
 >  [**中文設置教學**](https://zero6992.me/2023/03/08/chatGPT-discord-bot-chinese/)
 ------
-## Commands
+## botのコマンド
 
 * `/chat [message]` ChatGPTでチャットする！
 * `/draw [prompt]` Dalle2モデルで画像を生成する
@@ -181,13 +181,14 @@
    * Bard`： Google Bardモデル
    * Bing`： Microsoft Bingモデル
 
+
 ### 特別な機能
 
 #### 描く
 
 ![image](https://user-images.githubusercontent.com/91911303/223772051-13f840d5-99ef-4762-98d2-d15ce23cbbd5.png)
 
-#### ペルソナのスイされた
+#### ペルソナのスイッチ
 > **注意**
 >
 > 特定のペルソナを使用すると、下品なコンテンツや不穏なコンテンツが生成される可能性があります。自己責任でご利用ください。
