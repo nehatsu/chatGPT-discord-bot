@@ -19,13 +19,13 @@ def run_discord_bot():
         logger.info(f'{client.user} is now running!')
 
 
-    @client.tree.command(name="chat", description="Have a chat with ChatGPT")
+    @client.tree.command(name="chat", description="aiとチャットをする")
     async def chat(interaction: discord.Interaction, *, message: str):
         if client.is_replying_all == "True":
             await interaction.response.defer(ephemeral=False)
             await interaction.followup.send(
-                "> **WARN: You already on replyAll mode. If you want to use the Slash Command, switch to normal mode by using `/replyall` again**")
-            logger.warning("\x1b[31mYou already on replyAll mode, can't use slash command!\x1b[0m")
+                "> **おっと:あなたはすでに replyAll モードになっています。スラッシュコマンドを使いたい場合は、もう一度 `/replyall` を使って通常モードに切り替えてください。**")
+            logger.warning("\x1b[31mすでにReplyAllモードになっているので、スラッシュコマンドは使えない！\x1b[0m")
             return
         if interaction.user == client.user:
             return
@@ -37,51 +37,51 @@ def run_discord_bot():
         await client.enqueue_message(interaction, message)
 
 
-    @client.tree.command(name="private", description="Toggle private access")
+    @client.tree.command(name="private", description="プライベートモードにする")
     async def private(interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
         if not client.isPrivate:
             client.isPrivate = not client.isPrivate
-            logger.warning("\x1b[31mSwitch to private mode\x1b[0m")
+            logger.warning("\x1b[31mプライベートモードにアクセスした\x1b[0m")
             await interaction.followup.send(
-                "> **INFO: Next, the response will be sent via private reply. If you want to switch back to public mode, use `/public`**")
+                "> **情報: 次に、プライベート・リプライで応答が送信される。公開モードに戻したい場合は、`/public`**")
         else:
-            logger.info("You already on private mode!")
+            logger.info("あなたは既にプライベートモードになっています")
             await interaction.followup.send(
-                "> **WARN: You already on private mode. If you want to switch to public mode, use `/public`**")
+                "> **おっと: あなたはすでにプライベート・モードになっています。公開モードに切り替えたい場合は `/public` を使ってください。**")
 
 
-    @client.tree.command(name="public", description="Toggle public access")
+    @client.tree.command(name="public", description="パブリックモードに切り替える")
     async def public(interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
         if client.isPrivate:
             client.isPrivate = not client.isPrivate
             await interaction.followup.send(
-                "> **INFO: Next, the response will be sent to the channel directly. If you want to switch back to private mode, use `/private`**")
+                "> **情報: 次に、レスポンスがチャンネルに直接送信されます。プライベートモードに戻したい場合は `/private` を使ってください。**")
             logger.warning("\x1b[31mSwitch to public mode\x1b[0m")
         else:
             await interaction.followup.send(
-                "> **WARN: You already on public mode. If you want to switch to private mode, use `/private`**")
-            logger.info("You already on public mode!")
+                "> **おっと: あなたはすでにパブリック・モードになっています。プライベートモードに切り替えたい場合は `/private` を使ってください。**")
+            logger.info("既にパブリックモードになっています")
 
 
-    @client.tree.command(name="replyall", description="Toggle replyAll access")
+    @client.tree.command(name="replyall", description="全てのメッセージに反応する")
     async def replyall(interaction: discord.Interaction):
         client.replying_all_discord_channel_id = str(interaction.channel_id)
         await interaction.response.defer(ephemeral=False)
         if client.is_replying_all == "True":
             client.is_replying_all = "False"
             await interaction.followup.send(
-                "> **INFO: Next, the bot will response to the Slash Command. If you want to switch back to replyAll mode, use `/replyAll` again**")
+                "> **情報: 次に、botはスラッシュコマンドに応答します。replyAll モードに戻したい場合は、もう一度 `/replyAll` を使ってください。**")
             logger.warning("\x1b[31mSwitch to normal mode\x1b[0m")
         elif client.is_replying_all == "False":
             client.is_replying_all = "True"
             await interaction.followup.send(
-                "> **INFO: Next, the bot will disable Slash Command and responding to all message in this channel only. If you want to switch back to normal mode, use `/replyAll` again**")
-            logger.warning("\x1b[31mSwitch to replyAll mode\x1b[0m")
+                "> **情報 : 次に、ボットはスラッシュコマンドを無効にし、このチャンネル内のすべてのメッセージにのみ応答するようにします。通常モードに戻したい場合は、もう一度 `/replyAll` を使ってください。**")
+            logger.warning("\x1b[31m replyAll モードに切り替え\x1b[0m")
 
 
-    @client.tree.command(name="chat-model", description="Switch different chat model")
+    @client.tree.command(name="chat-model", description="chatモデルの切り替え")
     @app_commands.choices(choices=[
         app_commands.Choice(name="Official GPT-3.5", value="OFFICIAL"),
         app_commands.Choice(name="Ofiicial GPT-4.0", value="OFFICIAL-GPT4"),
@@ -114,21 +114,21 @@ def run_discord_bot():
             elif choices.value == "Bing":
                 client.chat_model = "Bing"
             else:
-                raise ValueError("Invalid choice")
+                raise ValueError("無効な選択")
 
             client.chatbot = client.get_chatbot_model()
-            await interaction.followup.send(f"> **INFO: You are now in {client.chat_model} model.**\n")
-            logger.warning(f"\x1b[31mSwitch to {client.chat_model} model\x1b[0m")
+            await interaction.followup.send(f"> **情報: あなたは今 {client.chat_model} です.**\n")
+            logger.warning(f"\x1b[31 {client.chat_model} model\x1b[0m")
 
         except Exception as e:
             client.chat_model = original_chat_model
             client.openAI_gpt_engine = original_openAI_gpt_engine
             client.chatbot = client.get_chatbot_model()
-            await interaction.followup.send(f"> **ERROR: Error while switching to the {choices.value} model, check that you've filled in the related fields in `.env`.**\n")
-            logger.exception(f"Error while switching to the {choices.value} model: {e}")
+            await interaction.followup.send(f"> **エラー: 切り替え中に {choices.value} がエラーを起こしました.**\n")
+            logger.exception(f"エラー {choices.value} model: {e}")
 
 
-    @client.tree.command(name="reset", description="Complete reset conversation history")
+    @client.tree.command(name="reset", description="履歴の削除")
     async def reset(interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
         if client.chat_model == "OFFICIAL":
@@ -141,46 +141,46 @@ def run_discord_bot():
             await client.send_start_prompt()
         elif client.chat_model == "Bing":
             await client.chatbot.reset()
-        await interaction.followup.send("> **INFO: I have forgotten everything.**")
+        await interaction.followup.send("> **情報: 履歴を削除をしました！**")
         personas.current_persona = "standard"
         logger.warning(
-            f"\x1b[31m{client.chat_model} bot has been successfully reset\x1b[0m")
+            f"\x1b[31m{client.chat_model} は正常にリセットされました\x1b[0m")
 
-
-    @client.tree.command(name="help", description="Show help for the bot")
+ 
+    @client.tree.command(name="help", description="ヘルプを表示する")
     async def help(interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
-        await interaction.followup.send(""":star: **BASIC COMMANDS** \n
-        - `/chat [message]` Chat with ChatGPT!
-        - `/draw [prompt]` Generate an image with the Dalle2 model
-        - `/switchpersona [persona]` Switch between optional ChatGPT jailbreaks
-                `random`: Picks a random persona
-                `chatgpt`: Standard ChatGPT mode
-                `dan`: Dan Mode 11.0, infamous Do Anything Now Mode
-                `sda`: Superior DAN has even more freedom in DAN Mode
-                `confidant`: Evil Confidant, evil trusted confidant
-                `based`: BasedGPT v2, sexy GPT
-                `oppo`: OPPO says exact opposite of what ChatGPT would say
-                `dev`: Developer Mode, v2 Developer mode enabled
+        await interaction.followup.send(""":**使い方** \n
+        - `/chat [message]` ChatGPTでチャットする！
+        - `/draw [prompt]` Dalle2モデルで画像を生成する
+        - `/switchpersona [persona]` オプションのchatGPT脱獄を切り替える
+                `random`： ランダムにペルソナを選ぶ
+                `chatgpt`： 標準のchatGPTモード
+                dan`： ダンモード 11.0、悪名高い事ができるモードらそお
+                sda`： 優れた DAN がさらに自由になった DAN モード
+                コンフィダント`： Evil Confidant（邪悪な腹心の友）、邪悪な腹心の友
+                based`：ベースド BasedGPT v2、セクシーGPT
+                oppo`： OPPOはchatGPTと正反対のことを言う
+                dev`： 開発者モード、v2 開発者モード有効
 
-        - `/private` ChatGPT switch to private mode
-        - `/public` ChatGPT switch to public mode
-        - `/replyall` ChatGPT switch between replyAll mode and default mode
-        - `/reset` Clear ChatGPT conversation history
-        - `/chat-model` Switch different chat model
-                `OFFICIAL`: GPT-3.5 model
-                `UNOFFICIAL`: Website ChatGPT
-                `Bard`: Google Bard model
-                `Bing`: Microsoft Bing model
+        - private` ChatGPT をプライベートモードに切り替える。
+        - public` ChatGPT をパブリックモードに切り替える。
+        - `/replyall` ChatGPT replyAll モードとデフォルトモードの切り替え
+        - `/reset` ChatGPTの会話履歴を消去する。
+        - `/chat-model` 異なるチャットモデルに切り替える
+                OFFICIAL`： GPT-3.5 モデル
+                UNOFFICIAL`： ウェブサイトChatGPT
+                Bard`： Google Bardモデル
 
-For complete documentation, please visit:
-https://github.com/Zero6992/chatGPT-discord-bot""")
+        その他のドキュメントはこちらから:https://github.com/nehatsu/chatGPT-discord-bot/tree/main""")
 
         logger.info(
             "\x1b[31mSomeone needs help!\x1b[0m")
 
 
-    @client.tree.command(name="info", description="Bot information")
+
+
+    @client.tree.command(name="info", description="botの情報")
     async def info(interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
         chat_engine_status = client.openAI_gpt_engine
@@ -191,7 +191,7 @@ https://github.com/Zero6992/chatGPT-discord-bot""")
             chat_model_status = "OpenAI API(OFFICIAL)"
         if client.chat_model != "UNOFFICIAL" and client.chat_model != "OFFICIAL":
             chat_engine_status = "x"
-        elif client.openAI_gpt_engine == "text-davinci-002-render-sha":
+        elif client.openAI_gpt_engine == "テキスト-ダヴィンチ-002-レンダー-シャ":
             chat_engine_status = "gpt-3.5"
 
         await interaction.followup.send(f"""
@@ -202,7 +202,7 @@ gpt-engine: {chat_engine_status}
 """)
 
 
-    @client.tree.command(name="draw", description="Generate an image with the Dalle2 model")
+    @client.tree.command(name="draw", description="Dalle2モデルで画像を生成する")
     @app_commands.choices(amount=[
         app_commands.Choice(name="1", value=1),
         app_commands.Choice(name="2", value=2),
@@ -236,17 +236,17 @@ gpt-engine: {chat_engine_status}
 
         except openai.InvalidRequestError:
             await interaction.followup.send(
-                "> **ERROR: Inappropriate request 😿**")
+                "> **エラー: 不適切な要求 **")
             logger.info(
             f"\x1b[31m{username}\x1b[0m made an inappropriate request.!")
 
         except Exception as e:
             await interaction.followup.send(
-                "> **ERROR: Something went wrong 😿**")
+                "> **エラー: 生成できませんでした**")
             logger.exception(f"Error while generating image: {e}")
 
 
-    @client.tree.command(name="switchpersona", description="Switch between optional chatGPT jailbreaks")
+    @client.tree.command(name="switchpersona", description="オプションのchatGPTジェイルブレイクを切り替える")
     @app_commands.choices(persona=[
         app_commands.Choice(name="Random", value="random"),
         app_commands.Choice(name="Standard", value="standard"),
@@ -274,7 +274,7 @@ gpt-engine: {chat_engine_status}
         persona = persona.value
 
         if persona == personas.current_persona:
-            await interaction.followup.send(f"> **WARN: Already set to `{persona}` persona**")
+            await interaction.followup.send(f"> **おっと: すでに`{persona}` になってます**")
 
         elif persona == "standard":
             if client.chat_model == "OFFICIAL":
@@ -288,7 +288,7 @@ gpt-engine: {chat_engine_status}
 
             personas.current_persona = "standard"
             await interaction.followup.send(
-                f"> **INFO: Switched to `{persona}` persona**")
+                f"> **情報: `{persona}` に切り替えました**")
 
         elif persona == "random":
             choices = list(personas.PERSONAS.keys())
@@ -297,7 +297,7 @@ gpt-engine: {chat_engine_status}
             personas.current_persona = chosen_persona
             await responses.switch_persona(chosen_persona, client)
             await interaction.followup.send(
-                f"> **INFO: Switched to `{chosen_persona}` persona**")
+                f"> **情報: `{chosen_persona}` に切り替えました**")
 
 
         elif persona in personas.PERSONAS:
@@ -305,17 +305,17 @@ gpt-engine: {chat_engine_status}
                 await responses.switch_persona(persona, client)
                 personas.current_persona = persona
                 await interaction.followup.send(
-                f"> **INFO: Switched to `{persona}` persona**")
+                f"> **情報: `{persona}` に切り替えました**")
             except Exception as e:
                 await interaction.followup.send(
-                    "> **ERROR: Something went wrong, please try again later! 😿**")
-                logger.exception(f"Error while switching persona: {e}")
+                    "> **エラー: 何か問題が発生しました！**")
+                logger.exception(f"切り替え時のエラー: {e}")
 
         else:
             await interaction.followup.send(
-                f"> **ERROR: No available persona: `{persona}` 😿**")
+                f"> **エラー: アクセス出来ませんでした: `{persona}` 😿**")
             logger.info(
-                f'{username} requested an unavailable persona: `{persona}`')
+                f'{username} 利用できないペルソナをリクエスト: `{persona}`')
 
 
     @client.event
@@ -332,7 +332,7 @@ gpt-engine: {chat_engine_status}
 
                     await client.enqueue_message(message, user_message)
             else:
-                logger.exception("replying_all_discord_channel_id not found, please use the command `/replyall` again.")
+                logger.exception("replyall`コマンドをもう一度使用してください。")
 
     TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
